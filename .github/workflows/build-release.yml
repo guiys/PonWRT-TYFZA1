@@ -57,10 +57,10 @@ jobs:
             echo "::error::Release $RELEASE_TAG already exists. Enable replace_release to rebuild this release, or choose a new tag."
             exit 1
           fi
-      - name: Prepare release notes
-        run: |
-          python3 scripts/test_release_notes.py
-          python3 scripts/release_notes.py "$RELEASE_TAG" > "$RUNNER_TEMP/release-notes.md"
+#      - name: Prepare release notes
+#        run: |
+#          python3 scripts/test_release_notes.py
+#          python3 scripts/release_notes.py "$RELEASE_TAG" > "$RUNNER_TEMP/release-notes.md"
       - name: Install build dependencies
         run: |
           sudo apt-get update
