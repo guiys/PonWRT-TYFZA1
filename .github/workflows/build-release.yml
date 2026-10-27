@@ -130,6 +130,22 @@ jobs:
           sh scripts/package_release.sh sources/openwrt artifacts/release
           git archive --format=tar.gz --prefix=PonWRT-TYFZA1/ HEAD \
             > artifacts/release/PonWRT-TYFZA1-source.tar.gz
+
+      - name: Collect OpenList packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/release/openlist-packages
+
+          find sources/openwrt/bin -type f \
+            \( -name 'openlist*.apk' \
+            -o -name 'luci-app-openlist*.apk' \
+            -o -name 'openlist*.ipk' \
+            -o -name 'luci-app-openlist*.ipk' \) \
+            -exec cp -v {} artifacts/release/openlist-packages/ \;
+
+          find artifacts/release/openlist-packages -type f -print
+
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         if: always()
         with:
