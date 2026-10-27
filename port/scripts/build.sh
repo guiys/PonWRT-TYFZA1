@@ -31,6 +31,8 @@ if ! grep -Fq 'regulatory.db.p7s' package/firmware/wireless-regdb/Makefile; then
     REGDB_PATCHED=1
 fi
 make defconfig
+echo "===== DAE kernel config after defconfig ====="
+grep -E '^(CONFIG_KERNEL_(DEBUG_INFO|DEBUG_INFO_REDUCED|DEBUG_INFO_BTF|KPROBES|KPROBE_EVENTS|BPF_EVENTS|XDP_SOCKETS|NET_CLS_BPF|NET_SCH_INGRESS)=|# CONFIG_KERNEL_DEBUG_INFO_REDUCED is not set)' .config || true
 for package in luci-app-tyfza1-pon luci-theme-argon luci-i18n-argon-config-zh-cn; do
     grep -qx "CONFIG_PACKAGE_$package=y" .config || {
         echo "Required firmware package missing after defconfig: $package" >&2
@@ -66,4 +68,4 @@ else
         --stock "${TYFZA1_STOCK_INPUTS:-$PROJECT/analysis/private/live-files}"
     python3 "$PROJECT/tools/prepare_wifi_runtime.py" "$TREE/files" --openwrt-tree "$TREE"
 fi
-make -j"$JOBS" V=s world
+#make -j"$JOBS" V=s world
