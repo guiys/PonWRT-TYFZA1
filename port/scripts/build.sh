@@ -31,8 +31,13 @@ if ! grep -Fq 'regulatory.db.p7s' package/firmware/wireless-regdb/Makefile; then
     REGDB_PATCHED=1
 fi
 make defconfig
-echo "===== DAE kernel config after defconfig ====="
-grep -E '^(CONFIG_KERNEL_(DEBUG_INFO|DEBUG_INFO_REDUCED|DEBUG_INFO_BTF|KPROBES|KPROBE_EVENTS|BPF_EVENTS|XDP_SOCKETS|NET_CLS_BPF|NET_SCH_INGRESS)=|# CONFIG_KERNEL_DEBUG_INFO_REDUCED is not set)' .config || true
+echo "===== DAE kernel config ====="
+grep -E '^(CONFIG_(BPF|BPF_SYSCALL|BPF_JIT|BPF_STREAM_PARSER|CGROUPS|KPROBES|KPROBE_EVENTS|BPF_EVENTS|NET_INGRESS|NET_EGRESS|NET_SCH_INGRESS|NET_CLS_BPF|NET_CLS_ACT)=|# CONFIG_(BPF|BPF_SYSCALL|BPF_JIT|BPF_STREAM_PARSER|NET_INGRESS|NET_EGRESS|NET_SCH_INGRESS|NET_CLS_BPF|NET_CLS_ACT) is not set)' \
+    build_dir/target-*/linux-*/linux-*/.config 2>/dev/null || true
+
+echo "===== OpenWrt top-level config ====="
+grep -E '^(CONFIG_KERNEL_(BPF|BPF_SYSCALL|BPF_JIT|BPF_STREAM_PARSER|CGROUPS|KPROBES|KPROBE_EVENTS|BPF_EVENTS|NET_INGRESS|NET_EGRESS|NET_SCH_INGRESS|NET_CLS_BPF|NET_CLS_ACT)=|# CONFIG_KERNEL_(BPF|BPF_SYSCALL|BPF_JIT|BPF_STREAM_PARSER|NET_INGRESS|NET_EGRESS|NET_SCH_INGRESS|NET_CLS_BPF|NET_CLS_ACT) is not set)' \
+    .config || true
 for package in luci-app-tyfza1-pon luci-theme-argon luci-i18n-argon-config-zh-cn; do
     grep -qx "CONFIG_PACKAGE_$package=y" .config || {
         echo "Required firmware package missing after defconfig: $package" >&2
